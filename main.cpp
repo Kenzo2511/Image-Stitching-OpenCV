@@ -7,56 +7,59 @@
 namespace fs = std::filesystem;
 using namespace std;
 using namespace cv;
-Stitcher::Mode mode = Stitcher::PANORAMA;
 
-cv::Mat readImage(std::string &path){
-    cv::Mat image = imread(path);
-    return image;
-}
+class StitcherImages{
+    public:
+        StitcherImages(std::string folderPath_) {
+            folderPath = folderPath_;
+            stitcher = Stitcher::create(mode);
 
-Stitcher::Status stitchImages(vector<cv::Mat> &images, Ptr<Stitcher> &stitcher, cv::Mat &pano){
-    Stitcher::Status status = stitcher->stitch(images, pano);
-    if (status != Stitcher::OK)
-    {
-        cout << "Can't stitch images\n";
-        exit(0);
-    }
-    return status;
-}
+            for (const auto & entry : fs::directory_iterator(folderPath)){
+                std::string imagePath = entry.path();
+                cv::Mat image = readImage(imagePath);
+                images.push_back(image);
+            }
+        }
 
-std::vector<std::string> getImagePathsFromFolder(const std::string &folderPath){
-    std::vector<std::string> imagePaths;
-    for (const auto & entry : fs::directory_iterator(folderPath)){
-        std::string path = entry.path();
-        imagePaths.push_back(path);
-    }
-    return imagePaths;
+        cv::Mat readImage(std::string &path){
+            cv::Mat image = imread(path);
+            return image;
+        }
 
-}
+        Stitcher::Status stitchImages(cv::Mat &stitchedImage){
+            Stitcher::Status status = stitcher->stitch(images, stitchedImage);
+            if (status != Stitcher::OK)
+            {
+                cout << "Can't stitch images\n";
+                exit(0);
+            }
+            return status;
+        }
 
-void saveImage(const std::string &savePath, cv::Mat &image){
-    imwrite(savePath, image);
-}
- 
+        void saveImage(const std::string &savePath, cv::Mat &image){
+            imwrite(savePath, image);
+        }
+
+    private:
+        Ptr<Stitcher> stitcher;
+        vector<cv::Mat> images;
+        std::string folderPath;
+        Stitcher::Mode mode = Stitcher::PANORAMA;
+};
+
 int main(int argc, char* argv[])
 {
-    vector<Mat> images;
-    const std::string folderPath = argv[1];
-    std::vector<std::string> imagePaths = getImagePathsFromFolder(folderPath);
-    for (auto &imagePath:imagePaths)
-    {
-        cv::Mat image = readImage(imagePath);
-        images.push_back(image);
-    }
+    std::string folder = argv[1];
+    StitcherImages stitcher(folder);
      
     Mat stitchedImage;
-    Ptr<Stitcher> stitcher = Stitcher::create(mode);
-    Stitcher::Status status = stitchImages(images, stitcher, stitchedImage);
+    stitcher.stitchImages(stitchedImage);
 
-    const std::string path =  "../result.jpg";
-    saveImage( path, stitchedImage);
+    const std::string savedPath =  "../result.jpg";
+    stitcher.saveImage(savedPath, stitchedImage);
+
     imshow("Window Name", stitchedImage); 
-
     waitKey(0);
+
     return 0;
 }
