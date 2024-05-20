@@ -58,8 +58,5 @@ int main(int argc, char* argv[])
     const std::string savedPath =  "../result.jpg";
     stitcher.saveImage(savedPath, stitchedImage);
 
-    imshow("Window Name", stitchedImage); 
-    waitKey(0);
-
     return 0;
 }
