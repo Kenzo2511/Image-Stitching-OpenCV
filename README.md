@@ -1,5 +1,7 @@
 # Stitching Image
 This is a small C++ script that uses the OpenCV library to perform image stitching on Ubuntu.
+# Data
+APAP Dataset (2013): https://cs.adelaide.edu.au/~tjchin/apap/#Datasets
 # Installation
 - [CMake]
 ```
@@ -23,6 +25,10 @@ cd build
 cmake ..
 make -j10
 ./ProcessImage path_to_your_folder
+```
+# Example
+```
+./ProcessImage ./Stitch_Image_OpenCV/data
 ```
 # Output
 The image after stitching will be saved at Stitch_Image_OpenCV/result.jpg
