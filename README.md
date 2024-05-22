@@ -30,7 +30,9 @@ make -j10
 ```
 ./ProcessImage ./Stitch_Image_OpenCV/data
 ```
-# Output
-The image after stitching will be saved at Stitch_Image_OpenCV/result.jpg
+The image after stitching will be saved at ./Stitch_Image_OpenCV/result.jpg
+<p align='center'>
+    <img src="./result.jpg" alt="drawing" width="500"/>
+</p>
 
 **Thank you for accessing my repository. I wish you success.**
