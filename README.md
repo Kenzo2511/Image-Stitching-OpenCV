@@ -14,8 +14,8 @@ sudo apt install libopencv-dev
 # Using Docker
 ```
 cd Stitch_Image_OpenCV/docker
-docker build -f Dockerfile -t stitching_image ..
-docker run -it stitching_image
+bash ./docker_build.sh
+bash ./docker_run.sh
 ```
 # Usage
 ```
